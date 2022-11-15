@@ -1,8 +1,11 @@
 #include <Arduino.h>
 // #include <EtherCard.h>
 #include <IPAddress.h>
+#include<Dhcp.h>
 #include <EthernetUdp.h>
  #include <Ethernet.h>
+
+ 
  #include <SoftwareSerial.h>
 // SoftwareSerial rs232(25, 26); // RX, TX
 #include <esp32ModbusRTU.h>
@@ -34,7 +37,10 @@ void setup() {
   Serial2.begin(9600, SERIAL_8N1);  // Modbus connection
   Serial1.begin(9600, SERIAL_8N1);
   // rs232.begin(9600);
-  Ethernet.begin(mac, ip);
+   
+   Ethernet.begin(mac,ip);
+   
+  //  Ethernet.beginWithDHCP(mac, 10000,1000);
   // Open serial communications and wait for port to open:
   Serial.begin(9600);
   while (!Serial) {
@@ -54,7 +60,7 @@ void setup() {
 
   // start UDP
   Udp.begin(localPort);
-
+ Serial.println(Ethernet.localIP());
 //  ----------------------modbus
   modbus.onData([](uint8_t serverAddress, esp32Modbus::FunctionCode fc, uint16_t address, uint8_t* data, size_t length) {
     Serial.printf("id 0x%02x fc 0x%02x len %u: 0x", serverAddress, fc, length);
